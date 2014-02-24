@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Given a vhd and a blktrace, parse the trace to determine how many data
+# sectors are read.  parsehelper is used to get a list of metadata sectors.
+
+function calc_reads()
+{
+    disk="$1"
+    trace="$2"
+
+    rm -f /tmp/a /tmp/a /tmp/b /tmp/out
+
+    ./parsehelper "$disk" | sort > /tmp/a
+    blkparse -i "$trace" | awk '{if ($6 == "Q" && $7 == "R") { for (i = 0; i < $10; i++) { printf "%d\n", $8 + i }}}' | sort > /tmp/b
+    comm -13 /tmp/a /tmp/b > /tmp/out
+    wc -l /tmp/out | awk '{print $1}'
+}
+
+calc_reads "$1" "$2"
