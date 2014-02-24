@@ -298,7 +298,7 @@ static int is_sector_allocated(struct vhd_file_part *vhd, int block,
 
     if (vhd->last_block != block) {
         ssize_t bytesread;
-        off_t offset = be32toh(vhd->batmap[block]) * MT_SECS;
+        off_t offset = be32toh(vhd->batmap[block]) * (off_t)MT_SECS;
         if (lseek(vhd->fd, offset, SEEK_SET) < 0){
             perror("lseek");
             exit(1);
@@ -447,7 +447,7 @@ void vhd_get_sector(struct vhd_file *vhd, int block, int sector, unsigned char *
 
     while (ptr) {
         if (is_sector_allocated(ptr, block, sector_byte_nr, sector_bit_nr)) {
-            if (lseek(ptr->fd, be32toh(ptr->batmap[block]) * MT_SECS +
+            if (lseek(ptr->fd, be32toh(ptr->batmap[block]) * (off_t)MT_SECS +
                                    MT_SECS +
                                    sector * MT_SECS, SEEK_SET) < 0) {
                 perror("lseek");
