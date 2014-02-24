@@ -111,7 +111,7 @@ int main(int argc, char **argv){
 	unsigned int smallest;
 
 	// Validate there is a filename
-	if (argc > 1) {
+	if (argc <= 1) {
 		return(1);
 	}
 
@@ -142,7 +142,6 @@ int main(int argc, char **argv){
 	bytesread = read(vhdfd, &vhd_footer, sizeof(vhd_footer));
 	if (bytesread != sizeof(vhd_footer)){
 		fprintf(stderr, "Corrupt disk detected whilst reading VHD footer.\n");
-		fprintf(stderr, "Expecting %d bytes. Read %d bytes.\n", sizeof(vhd_footer), bytesread);
 		close(vhdfd);
 		return(1);
 	}
@@ -181,7 +180,6 @@ dyndisk:
 	bytesread = read(vhdfd, &vhd_footer_copy, sizeof(vhd_footer_copy));
 	if (bytesread != sizeof(vhd_footer_copy)){
 		fprintf(stderr, "Corrupt disk detected whilst reading VHD footer copy.\n");
-		fprintf(stderr, "Expecting %d bytes. Read %d bytes.\n", sizeof(vhd_footer_copy), bytesread);
 		close(vhdfd);
 		return(1);
 	}
@@ -196,7 +194,6 @@ dyndisk:
 	bytesread = read(vhdfd, &vhd_dyndiskhdr, sizeof(vhd_dyndiskhdr));
 	if (bytesread != sizeof(vhd_dyndiskhdr)){
 		fprintf(stderr, "Corrupt disk detected whilst reading VHD Dynamic Disk Header.\n");
-		fprintf(stderr, "Expecting %d bytes. Read %d bytes.\n", sizeof(vhd_dyndiskhdr), bytesread);
 		close(vhdfd);
 		return(1);
 	}
@@ -210,7 +207,6 @@ dyndisk:
 	// Allocate Batmap
 	if ((batmap = (u_int32_t *)malloc(sizeof(u_int32_t)*be32toh(vhd_dyndiskhdr.maxtabentries))) == NULL){
 		perror("malloc");
-		fprintf(stderr, "Error allocating %u bytes for the batmap.\n", be32toh(vhd_dyndiskhdr.maxtabentries));
 		close(vhdfd);
 		return(1);
 	}
@@ -218,7 +214,6 @@ dyndisk:
 	// Read batmap
 	if (lseek(vhdfd, be64toh(vhd_dyndiskhdr.tableoffset), SEEK_SET) < 0){
 		perror("lseek");
-		fprintf(stderr, "Error repositioning VHD descriptor to batmap at 0x%016"PRIX64"\n", be64toh(vhd_footer_copy.dataoffset));
 		free(batmap);
 		close(vhdfd);
 		return(1);
