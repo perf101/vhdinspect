@@ -1,0 +1,18 @@
+#!/bin/bash
+
+vm_name="$1"
+
+for i in {1..2}; do
+    rm -f -- *.blktrace.*
+
+    ./traceboot
+
+    # get the base and leaf uuid and the sr uuid
+    vm=$(xe vm-list name-label="$vm_name-clone" --minimal)
+    leaf=$(xe vbd-list params=vdi-uuid vm-uuid="$vm" type=Disk --minimal)
+    base=$(xe vdi-param-get uuid="$leaf" param-name=sm-config | egrep -o 'vhd-parent: .{36}' | cut -c 13-)
+    sr=$(xe vdi-list uuid="$leaf" params=sr-uuid --minimal)
+
+    ./parse "/dev/VG_XenStorage-$sr/VHD-$base" base
+    ./parse "/dev/VG_XenStorage-$sr/VHD-$leaf" leaf
+done

@@ -1,0 +1,34 @@
+same-sector:
+  Given a disk, count the number of sectors in each subsequent disk that are
+  the same at the same address.
+
+same-content:
+  Given a disk, count the number of sectors in each subsequent disk that have
+  the same content.
+
+identical-sectors:
+  Count the number of sectors that are identical across several disks (same
+  position and content).
+
+static-info:
+  Display allocated, deferred, leaf_allocated and overwritten statistics.
+
+For the above tools, disks are specified by listing the files in a chain in
+reverse order: child parent parent_of_parent ...
+If multiple disks are to be given, a comma is used as a separator:
+child1 parent1 , child2 parent2
+
+parse:
+  Given a disk and a trace, output the number of sectors read.
+
+parsehelper:
+  Used by parse to output which sectors in a disk are metadata.
+
+
+traceboot:
+  Given a VM name, clones the VM and starts it, tracing the disks until it has
+  booted up.
+
+runtest:
+  Uses traceboot to several times to output the number of sectors read from
+  the base and leaf images during bootup.
