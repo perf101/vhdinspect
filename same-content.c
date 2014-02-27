@@ -47,7 +47,8 @@ int main(int argc, char **argv)
     for (i = 0; i < n; i++) {
         if (vhd_is_block_allocated(vhds[0], i)) {
             for (j = 0; j < MT_SECS_PER_BLOCK; j++) {
-                if (vhd_is_sector_leaf_allocated(vhds[0], i, j)) {
+                if (vhd_is_sector_leaf_allocated(vhds[0], i, j) ||
+                    vhd_is_sector_overridden(vhds[0], i, j)) {
 					digest = vhd_get_sector_checksum(vhds[0], i, j);
 					g_hash_table_insert(ht, digest, digest);
 					total++;
@@ -57,7 +58,8 @@ int main(int argc, char **argv)
     }
 
     list = g_hash_table_get_keys(ht);
-    printf("There are %u unique sectors (out of %d leaf_allocated) in the first disk.\n", g_list_length(list), total);
+    printf("There are %u unique sectors (out of %d allocated in the child) "
+           "in the first disk.\n", g_list_length(list), total);
     g_list_free(list);
 
 	for (k = 1; k < num_files; k++) {
@@ -65,7 +67,8 @@ int main(int argc, char **argv)
 		for (i = 0; i < n; i++) {
 			if (vhd_is_block_allocated(vhds[k], i)) {
 				for (j = 0; j < MT_SECS_PER_BLOCK; j++) {
-					if (vhd_is_sector_leaf_allocated(vhds[k], i, j)) {
+					if (vhd_is_sector_leaf_allocated(vhds[k], i, j) ||
+                        vhd_is_sector_overridden(vhds[k], i, j)) {
 						digest = vhd_get_sector_checksum(vhds[k], i, j);
 						if (g_hash_table_lookup(ht, digest))
 							total++;
