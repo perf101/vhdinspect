@@ -13,6 +13,11 @@ identical-sectors:
 static-info:
   Display allocated, deferred, leaf_allocated and overwritten statistics.
 
+content-histogram:
+  Takes two disks.  Prints a list of sector hashes in the second disk that
+  match sectors in the first disk.  Prints out the number of times each hash
+  occurs.
+
 For the above tools, disks are specified by listing the files in a chain in
 reverse order: child parent parent_of_parent ...
 If multiple disks are to be given, a comma is used as a separator:
