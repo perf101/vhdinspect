@@ -1,11 +1,14 @@
 all: parsehelper static-info same-content identical-sectors same-sector \
-	 content-histogram
+	 content-histogram overridden-identical-sectors
 
 static-info: vhd.c static-info.c
 	gcc -Wall -g -O2 -o static-info vhd.c static-info.c `pkg-config --cflags --libs glib-2.0`
 
 identical-sectors: vhd.c identical-sectors.c
 	gcc -Wall -g -O2 -o identical-sectors vhd.c identical-sectors.c `pkg-config --cflags --libs glib-2.0`
+
+overridden-identical-sectors: vhd.c overridden-identical-sectors.c
+	gcc -Wall -g -O2 -o overridden-identical-sectors vhd.c overridden-identical-sectors.c `pkg-config --cflags --libs glib-2.0`
 
 same-content: vhd.c same-content.c
 	gcc -Wall -g -O2 -o same-content vhd.c same-content.c `pkg-config --cflags --libs glib-2.0`

@@ -18,6 +18,11 @@ content-histogram:
   match sectors in the first disk.  Prints out the number of times each hash
   occurs.
 
+overridden-identical-sectors:
+  Takes a single disk image which is expected to be a chain of two disks.
+  Shows the number of overridden sectors in the leaf image which have been
+  overridden with the same data as in the base image.
+
 For the above tools, disks are specified by listing the files in a chain in
 reverse order: child parent parent_of_parent ...
 If multiple disks are to be given, a comma is used as a separator:

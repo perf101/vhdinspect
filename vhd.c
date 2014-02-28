@@ -437,13 +437,17 @@ int vhd_is_sector_overridden(struct vhd_file *vhd, int block, int sector)
     }
 }
 
-/* Read the sector into data. */
-void vhd_get_sector(struct vhd_file *vhd, int block, int sector, unsigned char *data)
+/* Read the specified sector into data. */
+void vhd_get_sector_at_level(struct vhd_file *vhd, int level, int block,
+                             int sector, unsigned char *data)
 {
     int sector_byte_nr = sector / 8;
     int sector_bit_nr = sector % 8;
     struct vhd_file_part *ptr = vhd->files;
     ssize_t bytesread;
+
+    while (level--)
+        ptr = ptr->next;
 
     while (ptr) {
         if (is_sector_allocated(ptr, block, sector_byte_nr, sector_bit_nr)) {
@@ -466,6 +470,13 @@ void vhd_get_sector(struct vhd_file *vhd, int block, int sector, unsigned char *
     }
     fprintf(stderr, "Sector does not exist\n");
     exit(1);
+}
+
+/* A shortcut to get the sector at level 0. */
+void vhd_get_sector(struct vhd_file *vhd, int block, int sector,
+                    unsigned char *data)
+{
+    vhd_get_sector_at_level(vhd, 0, block, sector, data);
 }
 
 /* Get the sector checksum. Caller must free with g_free(). */

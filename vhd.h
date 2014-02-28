@@ -18,6 +18,8 @@ int vhd_is_sector_allocated(struct vhd_file *vhd, int block, int sector);
 int vhd_is_sector_deferred(struct vhd_file *vhd, int block, int sector);
 int vhd_is_sector_leaf_allocated(struct vhd_file *vhd, int block, int sector);
 int vhd_is_sector_overridden(struct vhd_file *vhd, int block, int sector);
+void vhd_get_sector_at_level(struct vhd_file *vhd, int level, int block,
+                             int sector, unsigned char *data);
 void vhd_get_sector(struct vhd_file *vhd, int block, int sector, unsigned char *data);
 char *vhd_get_sector_checksum(struct vhd_file *vhd, int block, int sector);
 
